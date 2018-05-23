@@ -1,5 +1,6 @@
 import time
 
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import LiveServerTestCase
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver import Firefox
@@ -116,6 +117,36 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertIn('Buy milk', page_text)
 
         # Satisfied, they both go back to sleep
+
+
+class UITest(StaticLiveServerTestCase):
+
+    def get_browser(self):
+        options = Options()
+        options.add_argument('-headless')
+        self.browser = Firefox(executable_path=r'C:\Users\yurblago\Documents\tdd-intro\geckodriver\geckodriver.exe',
+                               options=options,
+                               firefox_binary=r"C:\Users\yurblago\AppData\Local\Mozilla Firefox\firefox.exe"
+                               )
+
+    def setUp(self):
+        self.get_browser()
+
+    def tearDown(self):
+        self.browser.quit()
+
+    def wait_for_row_in_list_table(self, row_text):
+        start_time = time.time()
+        while True:
+            try:
+                table = self.browser.find_element_by_id('id_list_table')
+                rows = table.find_elements_by_tag_name('tr')
+                self.assertIn(row_text, [row.text for row in rows])
+                return
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
 
     def test_layout_and_styling(self):
         # Edith goes to the home page
