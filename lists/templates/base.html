@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>To-Do lists</title>
         <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/static/base.css" rel="stylesheet">
     </head>
     <body>
         <div class="container">
@@ -19,10 +20,12 @@
                             <input name="item_text" id="id_new_item" placeholder="Enter a to-do item" class="form-control input-lg"/>
                             {% csrf_token %}
                         </form>
-                        {% block table %}
-                        {% endblock %}
                     </div>
                 </div>
+            </div>
+            <div class="col-md-6 offset-md-3">
+                {% block table %}
+                {% endblock %}
             </div>
         </div>
     </body>
