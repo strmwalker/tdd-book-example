@@ -33,8 +33,9 @@ if os.environ.get('DJANGO_DEBUG_FALSE'):
 else:
     DEBUG = True
     SECRET_KEY = 'insecure-key-for-dev'
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = ['localhost']
 
+print(DEBUG, ALLOWED_HOSTS)
 
 # Application definition
 
