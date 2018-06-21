@@ -24,7 +24,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-# ALLOWED_HOSTS = ['*']
 
 if os.getenv('DJANGO_DEBUG_FALSE'):
     DEBUG = False
@@ -33,7 +32,7 @@ if os.getenv('DJANGO_DEBUG_FALSE'):
 else:
     DEBUG = True
     SECRET_KEY = 'insecure-key-for-dev'
-    ALLOWED_HOSTS = ['localhost']
+    ALLOWED_HOSTS = ['*']
 
 # Application definition
 
