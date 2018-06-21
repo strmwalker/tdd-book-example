@@ -1,47 +1,9 @@
-import os
-import time
-
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.test import LiveServerTestCase
-from selenium.common.exceptions import WebDriverException
-from selenium.webdriver import Firefox
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.firefox.options import Options
 
-MAX_WAIT = 5
+from functional_tests.base import FunctionalTest
 
 
-class NewVisitorTest(LiveServerTestCase):
-
-    def get_browser(self):
-        options = Options()
-        options.add_argument('-headless')
-        self.browser = Firefox(executable_path=r'C:\Users\yurblago\Documents\tdd-intro\geckodriver\geckodriver.exe',
-                               options=options,
-                               firefox_binary=r"C:\Users\yurblago\AppData\Local\Mozilla Firefox\firefox.exe"
-                               )
-
-    def setUp(self):
-        self.get_browser()
-        staging_server = os.environ.get('STAGING_SERVER')
-        if staging_server:
-            self.live_server_url = 'http://' + staging_server
-
-    def tearDown(self):
-        self.browser.quit()
-
-    def wait_for_row_in_list_table(self, row_text):
-        start_time = time.time()
-        while True:
-            try:
-                table = self.browser.find_element_by_id('id_list_table')
-                rows = table.find_elements_by_tag_name('tr')
-                self.assertIn(row_text, [row.text for row in rows])
-                return
-            except (AssertionError, WebDriverException) as e:
-                if time.time() - start_time > MAX_WAIT:
-                    raise e
-                time.sleep(0.5)
+class NewVisitorTest(FunctionalTest):
 
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Edith hears about a cool to-do lists site
@@ -121,58 +83,3 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertIn('Buy milk', page_text)
 
         # Satisfied, they both go back to sleep
-
-
-class UITest(StaticLiveServerTestCase):
-
-    def get_browser(self):
-        options = Options()
-        options.add_argument('-headless')
-        self.browser = Firefox(executable_path=r'C:\Users\yurblago\Documents\tdd-intro\geckodriver\geckodriver.exe',
-                               options=options,
-                               firefox_binary=r"C:\Users\yurblago\AppData\Local\Mozilla Firefox\firefox.exe"
-                               )
-
-    def setUp(self):
-        self.get_browser()
-        staging_server = os.environ.get('STAGING_SERVER')
-        if staging_server:
-            self.live_server_url = 'http://' + staging_server
-
-    def tearDown(self):
-        self.browser.quit()
-
-    def wait_for_row_in_list_table(self, row_text):
-        start_time = time.time()
-        while True:
-            try:
-                table = self.browser.find_element_by_id('id_list_table')
-                rows = table.find_elements_by_tag_name('tr')
-                self.assertIn(row_text, [row.text for row in rows])
-                return
-            except (AssertionError, WebDriverException) as e:
-                if time.time() - start_time > MAX_WAIT:
-                    raise e
-                time.sleep(0.5)
-
-    def test_layout_and_styling(self):
-        # Edith goes to the home page
-        self.browser.get(self.live_server_url)
-        self.browser.set_window_size(1024, 768)
-
-        input_box = self.browser.find_element_by_id('id_new_item')
-        self.assertAlmostEqual(
-            input_box.location['x'] + input_box.size['width'] / 2,
-            512,
-            delta=10
-        )
-
-        input_box.send_keys('testing')
-        input_box.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1: testing')
-        input_box = self.browser.find_element_by_id('id_new_item')
-        self.assertAlmostEqual(
-            input_box.location['x'] + input_box.size['width'] / 2,
-            512,
-            delta=10
-        )
