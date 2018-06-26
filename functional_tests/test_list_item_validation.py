@@ -74,7 +74,6 @@ class ItemValidationTest(StaticFunctionalTest):
             self.browser.find_element_by_css_selector('.has-error').is_displayed()
         ))
 
-        print('foo')
         # She starts typing in the input box to clear the error
         self.get_item_input_box().send_keys('a')
 
